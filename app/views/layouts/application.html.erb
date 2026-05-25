@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "League Manager" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="League Manager">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= yield :head %>
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+
+    <%# ── Navbar ──────────────────────────────────────────── %>
+    <nav class="site-navbar">
+      <%= link_to root_path, class: "navbar-brand" do %>
+        League<span>Manager</span>
+      <% end %>
+
+      <ul class="navbar-nav">
+        <li class="nav-item has-dropdown">
+          <a class="nav-link">Select League ▾</a>
+          <ul class="nav-dropdown">
+            <% League.all.each do |league| %>
+              <li><%= link_to league.name, league_path(league) %></li>
+            <% end %>
+            <% if current_user&.super_admin %>
+              <li class="nav-dropdown-divider"></li>
+              <li><%= link_to "+ New League", new_league_path %></li>
+            <% end %>
+          </ul>
+        </li>
+      
+
+      
+
+    
+        <% if current_user %>
+          <li><span class="navbar-user"><%= current_user.first_name %> <%= current_user.last_name %></span></li>
+          <li><%= button_to "Logout", logout_path, method: :delete, class: "btn-sports btn-sports-outline" %></li>
+        <% else %>
+          <li><%= link_to "Sign up", signup_path, class: "btn-sports btn-sports-outline" %></li>
+          <li><%= link_to "Login", login_path, class: "btn-sports btn-sports-primary" %></li>
+        <% end %>
+      </ul>
+    </nav>
+
+    <%# ── Page header (title + breadcrumb) ────────────────── %>
+    <% if content_for?(:page_header) %>
+      <div class="page-header">
+        <%= yield :page_header %>
+      </div>
+    <% end %>
+
+    <%# ── Sub-nav tabs ─────────────────────────────────────── %>
+    <% if content_for?(:section_tabs) %>
+      <ul class="section-tabs">
+        <%= yield :section_tabs %>
+      </ul>
+    <% end %>
+
+    <%# ── Flash messages ───────────────────────────────────── %>
+    <% if flash.any? %>
+      <div style="max-width:1200px; margin: 1rem auto; padding: 0 1.5rem;">
+        <% flash.each do |type, message| %>
+          <div class="alert alert-<%= type == 'notice' ? 'success' : 'danger' %>">
+            <%= message %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <%# ── Main content ─────────────────────────────────────── %>
+    <main class="site-main">
+      <%= yield %>
+    </main>
+
+    <footer class="site-footer">
+      &copy; <%= Date.today.year %> League Manager
+    </footer>
+
+  </body>
+</html>

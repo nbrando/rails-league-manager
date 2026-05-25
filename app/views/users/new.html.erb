@@ -1,0 +1,54 @@
+<% content_for :page_header do %>
+  <h1>Create Account</h1>
+  <ul class="breadcrumb">
+    <li><%= link_to "Home", root_path %></li>
+    <li>Sign Up</li>
+  </ul>
+<% end %>
+
+<div style="max-width: 480px; margin: 0 auto;">
+  <div class="section-block">
+    <div class="section-block-header">
+      <h3>New Account</h3>
+    </div>
+    <div class="section-block-body">
+      <%= form_with model: @user, url: users_path, class: "form-sports" do |f| %>
+
+        <% if @user.errors.any? %>
+          <div class="alert alert-danger">
+            <% @user.errors.full_messages.each do |msg| %>
+              <div><%= msg %></div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <div class="form-group">
+          <%= f.label :first_name %>
+          <%= f.text_field :first_name, placeholder: "First name" %>
+        </div>
+        <div class="form-group">
+          <%= f.label :last_name %>
+          <%= f.text_field :last_name, placeholder: "Last name" %>
+        </div>
+        <div class="form-group">
+          <%= f.label :email %>
+          <%= f.email_field :email, placeholder: "your@email.com" %>
+        </div>
+        <div class="form-group">
+          <%= f.label :password %>
+          <%= f.password_field :password, placeholder: "Password" %>
+        </div>
+        <div class="form-group">
+          <%= f.label :password_confirmation, "Confirm Password" %>
+          <%= f.password_field :password_confirmation, placeholder: "Confirm password" %>
+        </div>
+
+        <%= f.submit "Create Account", class: "btn-sports btn-sports-primary" %>
+        <span style="margin-left: 1rem; font-size: 0.8rem; color: var(--text-muted);">
+          Already have an account? <%= link_to "Log in", login_path %>
+        </span>
+
+      <% end %>
+    </div>
+  </div>
+</div>

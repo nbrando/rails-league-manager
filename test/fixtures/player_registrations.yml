@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  player: one
+  team_season: one
+  jersey_number: 1
+  joined_on: 2026-05-16
+  left_on: 2026-05-16
+
+two:
+  player: two
+  team_season: two
+  jersey_number: 1
+  joined_on: 2026-05-16
+  left_on: 2026-05-16

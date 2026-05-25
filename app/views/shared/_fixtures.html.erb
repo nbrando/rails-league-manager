@@ -1,0 +1,18 @@
+<% matches_by_round.each do |round, matches| %>
+  <section>
+    <h2>Round <%= round.number %></h2>
+    <% matches.each do |match| %>
+      <div class="match">
+        <span><%= match.home_team.name %></span>
+        <% if match.match_result %>
+          <span><%= match.home_score %> – <%= match.away_score %></span>
+        <% else %>
+          <span>vs</span>
+        <% end %>
+        <span><%= match.away_team.name %></span>
+        <span><%= match.scheduled_at&.strftime("%a %d %b, %I:%M%p") %></span>
+        <span><%= match.venue&.venue_name %></span>
+      </div>
+    <% end %>
+  </section>
+<% end %>

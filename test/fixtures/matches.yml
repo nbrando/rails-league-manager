@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  round: one
+  home_team: one
+  away_team: one
+  venue: one
+  scheduled_at: 2026-05-16 18:21:46
+  status: MyString
+
+two:
+  round: two
+  home_team: two
+  away_team: two
+  venue: two
+  scheduled_at: 2026-05-16 18:21:46
+  status: MyString

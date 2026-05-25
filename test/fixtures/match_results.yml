@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  match: one
+  home_goals: 1
+  home_behinds: 1
+  away_goals: 1
+  away_behinds: 1
+
+two:
+  match: two
+  home_goals: 1
+  home_behinds: 1
+  away_goals: 1
+  away_behinds: 1

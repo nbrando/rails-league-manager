@@ -1,0 +1,111 @@
+<% content_for :page_header do %>
+  <h1><%= @league.name %></h1>
+  <ul class="breadcrumb">
+    <li><%= link_to "Home", root_path %></li>
+    <li><%= link_to "Leagues", leagues_path %></li>
+    <li><%= @league.name %></li>
+  </ul>
+<% end %>
+
+<%# ── Sub-nav tabs ──────────────────────────────────────────── %>
+<% content_for :section_tabs do %>
+  <li><a href="<%= league_path(@league) %>" class="active">Overview</a></li>
+  <li><a href="<%= fixtures_league_path(@league) %>">Fixtures</a></li>
+  <li><a href="<%= ladder_league_path(@league) %>">Ladder</a></li>
+<% end %>
+
+<% @divisions.each do |division| %>
+  <% division.seasons.each do |season| %>
+
+    <div class="layout-grid">
+
+      <%# ── Left: Fixtures ──────────────────────────────────── %>
+      <div>
+        <div class="section-block">
+          <div class="section-block-header">
+            <h3>Fixtures &mdash; <%= season.name %></h3>
+          </div>
+          <div class="section-block-body no-pad">
+            <table class="table-sports">
+              <thead>
+                <tr>
+                  <th>Rnd</th>
+                  <th>Date</th>
+                  <th>Home</th>
+                  <th>Result</th>
+                  <th>Away</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                <% season.rounds.each do |round| %>
+                  <% round.matches.each do |match| %>
+                    <tr>
+                      <td class="text-muted"><%= round.number %></td>
+                      <td class="text-muted"><%= match.scheduled_at&.strftime("%d %b, %H:%M") %></td>
+                      <td><span class="team-name"><%= match.home_team.name %></span></td>                      
+                      <td>
+                        <% if match.status == "Concluded" && match.match_result %>
+                          <span class="text-accent font-heading">
+                            <%= (match.match_result.home_goals * 6) + match.match_result.home_behinds %> 
+                            &ndash;
+                            <%= (match.match_result.away_goals * 6) + match.match_result.away_behinds %>
+                          </span>
+                        <% else %>
+                          <span class="text-muted">Scheduled</span>
+                        <% end %>
+                      </td>
+                    <td><span class="team-name"><%= match.away_team.name %></span></td>
+                    </tr>
+                  <% end %>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <%# ── Right: Ladder ───────────────────────────────────── %>
+      <div>
+        <div class="section-block">
+          <div class="section-block-header">
+            <h3>Ladder</h3>
+          </div>
+          <div class="section-block-body no-pad">
+            <table class="table-sports">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Team</th>
+                  <th>W</th>
+                  <th>L</th>
+                  <th>Pts</th>
+                </tr>
+              </thead>
+              <tbody>
+                <%
+                  rows = season.team_seasons.map do |ts|
+                    wins   = ts.matches.count { |m| m.winner_id == ts.team.id }
+                    losses = ts.matches.count { |m| m.loser_id  == ts.team.id }
+                    { ts: ts, wins: wins, losses: losses, points: wins * 4 }
+                  end.sort_by { |r| -r[:points] }
+                %>
+                <% rows.each_with_index do |row, i| %>
+                  <tr>
+                    <td class="rank"><%= i + 1 %></td>
+                    <td><span class="team-name"><%= row[:ts].team.name %></span></td>
+                    <td class="highlight"><%= row[:wins] %></td>
+                    <td><%= row[:losses] %></td>
+                    <td class="highlight"><%= row[:points] %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><%# end layout-grid %>
+
+  <% end %>
+<% end %>

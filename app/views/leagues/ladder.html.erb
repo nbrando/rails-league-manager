@@ -1,0 +1,74 @@
+<% content_for :page_header do %>
+  <h1><%= @league.name %></h1>
+  <ul class="breadcrumb">
+    <li><%= link_to "Home", root_path %></li>
+    <li><%= link_to "Leagues", leagues_path %></li>
+    <li><%= link_to @league.name, league_path(@league) %></li>
+    <li><%= link_to "Ladder", ladder_league_path(@league) %></li>
+  </ul>
+<% end %>
+
+<%# ── Sub-nav tabs ──────────────────────────────────────────── %>
+<% content_for :section_tabs do %>
+  <li><a href="<%= league_path(@league) %>">Overview</a></li>
+  <li><a href="<%= fixtures_league_path(@league) %>">Fixtures</a></li>
+  <li><a href="<%= ladder_league_path(@league) %>" class="active">Ladder</a></li>
+<% end %>
+
+<% @divisions.each do |division| %>
+  <% division.seasons.each do |season| %>
+
+    <div class="section-block">
+      <div class="section-block-header">
+        <h3><%= season.name %> &mdash; Ladder</h3>
+        <span class="text-muted font-heading" style="font-size:0.75rem;"><%= division.name %></span>
+      </div>
+      <div class="section-block-body no-pad">
+
+        <%
+            rows = season.team_seasons.map do |ts|
+            wins   = ts.matches.count { |m| m.winner_id == ts.team.id }
+            losses = ts.matches.count { |m| m.loser_id  == ts.team.id }
+            played = wins + losses
+
+            points_for     = ts.matches.sum { |m| m.home_team_id == ts.team.id ? m.home_score.to_i : m.away_score.to_i }
+            points_against = ts.matches.sum { |m| m.home_team_id == ts.team.id ? m.away_score.to_i : m.home_score.to_i }
+
+            pct = points_against > 0 ? (points_for.to_f / points_against * 100).round(1) : 0.0
+
+            { ts: ts, played: played, wins: wins, losses: losses, pct: pct, points: wins * 4 }
+        end.sort_by { |r| [-r[:points], -r[:pct]] }
+        %>
+
+        <table class="table-sports">
+          <thead>
+            <tr>
+              <th style="width:3rem;">Pos</th>
+              <th style="text-align:left;">Team</th>
+              <th>P</th>
+              <th>W</th>
+              <th>L</th>
+              <th>Pts</th>
+              <th>%</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% rows.each_with_index do |row, i| %>
+              <tr>
+                <td class="rank" style="text-align:center;"><%= i + 1 %></td>
+                <td class="team-name" style="text-align:left;"><%= row[:ts].team.name %></td>
+                <td><%= row[:played] %></td>
+                <td class="highlight"><%= row[:wins] %></td>
+                <td><%= row[:losses] %></td>
+                <td class="highlight"><%= row[:points] %></td>
+                <td class="text-muted"><%= row[:pct] %>%</td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+
+  <% end %>
+<% end %>

@@ -1,0 +1,65 @@
+<%# ── Page header ──────────────────────────────────────────── %>
+<% content_for :page_header do %>
+  <h1><%= @league.name %></h1>
+  <ul class="breadcrumb">
+    <li><%= link_to "Home", root_path %></li>
+    <li><%= link_to "Leagues", leagues_path %></li>
+    <li><%= link_to @league.name, league_path(@league) %></li>
+    <li><%= link_to "Fixtures", fixtures_league_path(@league) %></li>
+  </ul>
+<% end %>
+
+<%# ── Sub-nav tabs ──────────────────────────────────────────── %>
+<% content_for :section_tabs do %>
+  <li><a href="<%= league_path(@league) %>">Overview</a></li>
+  <li><a href="<%= fixtures_league_path(@league) %>" class="active" >Fixtures</a></li>
+  <li><a href="<%= ladder_league_path(@league) %>" >Ladder</a></li>
+<% end %>
+
+<%# ── Main content ──────────────────────────────────────────── %>
+<div class="section-block">
+  <div class="section-block-header">
+    <h3><%= @season.name %> &mdash; All Fixtures</h3>
+  </div>
+  <div class="section-block-body no-pad" style="padding: 1.25rem;">
+
+    <% @matches.each do |round, matches| %>
+      <div class="round-header">Round <%= round.number %></div>
+
+      <% matches.each do |match| %>
+        <div class="scoreboard-card">
+          <div class="scoreboard-meta">
+            <span><%= match.scheduled_at&.strftime("%A, %d %b %Y - %I:%M %p") %></span>
+            <% if match.venue %>
+              <span><%= match.venue.venue_name %></span>
+            <% end %>
+            <span status-<%= match.status.downcase %>"><%= match.status %></span>
+          </div>
+          <div class="scoreboard-body">
+            <div class="scoreboard-team home">
+              <span class="scoreboard-team-name"><%= match.home_team.name %></span>
+              <span class="scoreboard-team-venue">Home</span>
+            </div>
+            <div class="scoreboard-score">
+              <% if match.match_result %>
+                <div class="score-display">
+                  <span><%= match.home_score %></span>
+                  <span class="score-separator">&ndash;</span>
+                  <span><%= match.away_score %></span>
+                </div>
+                <div class="score-label">Final Score</div>
+              <% else %>
+                <div class="score-display" style="color: var(--text-muted);">VS</div>
+              <% end %>
+            </div>
+            <div class="scoreboard-team away">
+              <span class="scoreboard-team-name"><%= match.away_team.name %></span>
+              <span class="scoreboard-team-venue">Away</span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+
+  </div>
+</div>
